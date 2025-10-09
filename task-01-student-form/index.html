@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <header class="bg-info text-white text-center p-3">
+    <h1>Student Registration</h1>
+  </header>
+  <div class="container my-4">
+    <form id="studentForm" novalidate>
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="name" required minlength="3" pattern="[A-Za-z\s]+" title="Only letters and spaces allowed">
+        <div class="invalid-feedback">
+          Please enter a valid name (at least 3 characters, letters only).
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" required>
+        <div class="invalid-feedback">
+          Please enter a valid email address.
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Birthdate</label>
+        <input type="date" class="form-control" id="birthdate" required>
+        <div class="mt-2">
+          <span class="badge bg-primary" id="ageDisplay" style="display: none;">Age: <span id="ageValue"></span> years</span>
+          <span class="badge bg-danger" id="dateError" style="display: none;">Future dates are not allowed</span>
+        </div>
+        <div class="invalid-feedback">
+          Please enter a valid birthdate.
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Program</label>
+        <select class="form-select" id="program" required>
+          <option value="">Select a program...</option>
+          <option value="Computer Science">Computer Science</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Business Administration">Business Administration</option>
+          <option value="Arts & Humanities">Arts & Humanities</option>
+          <option value="Natural Sciences">Natural Sciences</option>
+        </select>
+        <div class="invalid-feedback">
+          Please select a program.
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Marks</label>
+        <input type="number" class="form-control" id="marks1" placeholder="Subject 1" min="0" max="100" required>
+        <div class="invalid-feedback">
+          Please enter marks between 0 and 100.
+        </div>
+        <input type="number" class="form-control mt-2" id="marks2" placeholder="Subject 2" min="0" max="100" required>
+        <div class="invalid-feedback">
+          Please enter marks between 0 and 100.
+        </div>
+        <div class="mt-2">
+          <span class="badge bg-success" id="totalDisplay" style="display: none;">Total Marks: <span id="totalValue"></span></span>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Comments</label>
+        <textarea class="form-control" id="comments" maxlength="500"></textarea>
+        <div class="form-text"><span id="charCount">0</span>/500 characters</div>
+      </div>
+      
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+  </div>
+  <footer class="bg-dark text-white text-center p-3">
+    <p>© 2025 My Training</p>
+  </footer>
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+$(document).ready(function() {
+  // Set max date to today
+  const todayStr = new Date().toISOString().split('T')[0];
+  $('#birthdate').attr('max', todayStr);
+
+  // Name validation - only letters and spaces
+  $('#name').on('input', function() {
+    const value = $(this).val();
+    const pattern = /^[A-Za-z\s]+$/;
+    
+    if (value && !pattern.test(value)) {
+      $(this).addClass('is-invalid');
+    } else if (value.length >= 3) {
+      $(this).removeClass('is-invalid');
+      $(this).addClass('is-valid');
+    } else {
+      $(this).removeClass('is-valid is-invalid');
+    }
+  });
+
+  // Email validation
+  $('#email').on('input', function() {
+    const value = $(this).val();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (value && emailPattern.test(value)) {
+      $(this).removeClass('is-invalid');
+      $(this).addClass('is-valid');
+    } else if (value) {
+      $(this).addClass('is-invalid');
+      $(this).removeClass('is-valid');
+    } else {
+      $(this).removeClass('is-valid is-invalid');
+    }
+  });
+
+  // Calculate age when birthdate changes
+  $('#birthdate').on('change input', function() {
+    const birthdateVal = $(this).val();
+    if (!birthdateVal) {
+      $('#ageDisplay').hide();
+      $('#dateError').hide();
+      $(this).removeClass('is-valid is-invalid');
+      return;
+    }
+
+    const birthdate = new Date(birthdateVal);
+    const today = new Date();
+
+    if (birthdate > today) {
+      $('#dateError').show();
+      $('#ageDisplay').hide();
+      $(this).addClass('is-invalid');
+      $(this).removeClass('is-valid');
+      return;
+    } else {
+      $('#dateError').hide();
+      $(this).removeClass('is-invalid');
+      $(this).addClass('is-valid');
+    }
+
+    let age = today.getFullYear() - birthdate.getFullYear();
+    const monthDiff = today.getMonth() - birthdate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+      age--;
+    }
+
+    $('#ageValue').text(age);
+    $('#ageDisplay').show();
+  });
+
+  // Program validation
+  $('#program').on('change', function() {
+    if ($(this).val()) {
+      $(this).removeClass('is-invalid');
+      $(this).addClass('is-valid');
+    } else {
+      $(this).removeClass('is-valid');
+    }
+  });
+
+  // Marks validation
+  function validateMarks(input) {
+    const value = parseFloat($(input).val());
+    
+    if ($(input).val() === '') {
+      $(input).removeClass('is-valid is-invalid');
+      return false;
+    }
+    
+    if (isNaN(value) || value < 0 || value > 100) {
+      $(input).addClass('is-invalid');
+      $(input).removeClass('is-valid');
+      return false;
+    } else {
+      $(input).removeClass('is-invalid');
+      $(input).addClass('is-valid');
+      return true;
+    }
+  }
+
+  $('#marks1, #marks2').on('input change', function() {
+    validateMarks(this);
+    updateTotalMarks();
+  });
+
+  // Calculate total marks
+  function updateTotalMarks() {
+    const marks1 = parseFloat($('#marks1').val()) || 0;
+    const marks2 = parseFloat($('#marks2').val()) || 0;
+    const total = marks1 + marks2;
+
+    if ($('#marks1').val() || $('#marks2').val()) {
+      $('#totalValue').text(total);
+      $('#totalDisplay').show();
+    } else {
+      $('#totalDisplay').hide();
+    }
+  }
+
+  // Character count for comments
+  $('#comments').on('input', function() {
+    const length = $(this).val().length;
+    $('#charCount').text(length);
+  });
+
+  // Form submission with complete validation
+  $('#studentForm').on('submit', function(e) {
+    e.preventDefault();
+    
+    let isValid = true;
+
+    // Validate name
+    const name = $('#name').val().trim();
+    const namePattern = /^[A-Za-z\s]+$/;
+    if (!name || name.length < 3 || !namePattern.test(name)) {
+      $('#name').addClass('is-invalid');
+      isValid = false;
+    }
+
+    // Validate email
+    const email = $('#email').val().trim();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailPattern.test(email)) {
+      $('#email').addClass('is-invalid');
+      isValid = false;
+    }
+
+    // Validate birthdate
+    const birthdateVal = $('#birthdate').val();
+    if (!birthdateVal) {
+      $('#birthdate').addClass('is-invalid');
+      isValid = false;
+    } else {
+      const birthdate = new Date(birthdateVal);
+      const today = new Date();
+      if (birthdate > today) {
+        $('#birthdate').addClass('is-invalid');
+        $('#dateError').show();
+        alert("Please enter a valid birthdate. Future dates are not allowed.");
+        isValid = false;
+      }
+    }
+
+    // Validate program
+    if (!$('#program').val()) {
+      $('#program').addClass('is-invalid');
+      isValid = false;
+    }
+
+    // Validate marks
+    const marks1 = parseFloat($('#marks1').val());
+    const marks2 = parseFloat($('#marks2').val());
+    
+    if (isNaN(marks1) || marks1 < 0 || marks1 > 100) {
+      $('#marks1').addClass('is-invalid');
+      isValid = false;
+    }
+    
+    if (isNaN(marks2) || marks2 < 0 || marks2 > 100) {
+      $('#marks2').addClass('is-invalid');
+      isValid = false;
+    }
+
+    // If form is invalid, show alert and stop
+    if (!isValid) {
+      alert("Please fill all fields correctly before submitting.");
+      return false;
+    }
+
+    // Collect form data to display on next page
+    const formData = {
+      name: $('#name').val(),
+      email: $('#email').val(),
+      birthdate: $('#birthdate').val(),
+      age: $('#ageValue').text(),
+      program: $('#program').val(),
+      marks1: $('#marks1').val(),
+      marks2: $('#marks2').val(),
+      total: $('#totalValue').text(),
+      comments: $('#comments').val()
+    };
+
+    const params = new URLSearchParams(formData);
+    window.location.href = 'display.html?' + params.toString();
+  });
+});
+</script>
+  
+</body>
+</html>
