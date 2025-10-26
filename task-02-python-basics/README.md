@@ -1,5 +1,5 @@
 1. data_structres.py 
-   list, tuple, dictionary, set ----> add, update, delete, traverse (display) , sorting, groupby
+   this file contains list, tuple, dictionary, set ----> add, update, delete, traverse (display) , sorting, groupby
 
 2. variables_and_functions.py
    If, for, methods, variables and global variables
