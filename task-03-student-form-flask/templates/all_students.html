@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Students - Flask</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <header class="bg-info text-white text-center p-3">
+    <h1>All Registered Students</h1>
+  </header>
+  
+  <div class="container my-4">
+    <div class="mb-3">
+      <a href="{{ url_for('index') }}" class="btn btn-primary">Register New Student</a>
+    </div>
+
+    {% if students %}
+      <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Age</th>
+              <th>Program</th>
+              <th>Total Marks</th>
+              <th>Average</th>
+              <th>Grade</th>
+              <th>Submitted At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in students %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ student.name }}</td>
+              <td>{{ student.email }}</td>
+              <td>{{ student.age }} years</td>
+              <td>{{ student.program }}</td>
+              <td>{{ student.total }}</td>
+              <td>{{ "%.2f"|format(student.average) }}</td>
+              <td>
+                {% if student.average >= 90 %}
+                  <span class="badge bg-success">A</span>
+                {% elif student.average >= 80 %}
+                  <span class="badge bg-info">B</span>
+                {% elif student.average >= 70 %}
+                  <span class="badge bg-primary">C</span>
+                {% elif student.average >= 60 %}
+                  <span class="badge bg-warning">D</span>
+                {% else %}
+                  <span class="badge bg-danger">F</span>
+                {% endif %}
+              </td>
+              <td>{{ student.submitted_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert alert-info mt-3">
+        <strong>Total Students:</strong> {{ students|length }}
+      </div>
+    {% else %}
+      <div class="alert alert-warning">
+        <h4>No Students Registered Yet</h4>
+        <p>Start by <a href="{{ url_for('index') }}">registering a new student</a>.</p>
+      </div>
+    {% endif %}
+  </div>
+  
+  <footer class="bg-dark text-white text-center p-3">
+    <p>© 2025 My Training - Secure Flask Version</p>
+  </footer>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
