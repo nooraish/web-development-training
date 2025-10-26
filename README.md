@@ -15,4 +15,14 @@ Definition :
 2. Use JS in same form eg. Enter birthdate show age, Add marks - show total etc.
 3. Put validations on inputs
 
-### 🔄 Task 2:
+### ✅ Task 2:  Python - Data structures , function , loops , xlswriter 
+1. list, tuple, dictionary, set --- add, update, delete, traverse (display) , sorting, groupby
+2. If, for, methods, variables and global variables
+3. xlswriter
+
+### ✅ Task 3: Student Registartion Form - FLASK
+
+Create  the same form in task 1 using flask routes,  form, submit the form and print on second page using templates
+
+
+
