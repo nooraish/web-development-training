@@ -1,10 +1,3 @@
-task-03-student-form-flask/
-├── flask_backend.py      # Flask backend application
-├── templates/            # HTML templates
-│   ├── index.html        # Registration form
-│   ├── display.html      # Student details page
-│   └── all_students.html # All students list
-└── README.md             # This file
 
 1. Register a Student:
 
