@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="bg-primary text-white p-3">
+        <div class="container">
+            <h2>Student Registration System</h2>
+        </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="container mt-4">
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <h3>Enter Student Details</h3>
+        <form action="{{ url_for('submit') }}" method="POST" novalidate>
+        <!-- Name -->
+            <div class="mb-3">
+                <label>Full Name</label>
+                <input type="text" name="name" class="form-control">
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <!-- Phone -->
+            <div class="mb-3">
+                <label>Phone Number</label>
+                <input type="tel" name="phone" class="form-control" required>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="mb-3">
+                <label>Date of Birth</label>
+                <input type="date" name="dob" id="dob" class="form-control" onchange="calculateAge()" required>
+            </div>
+
+          <!-- Age (Auto-calculated) -->
+          <div class="mb-3">
+              <label>Age (Auto-calculated)</label>
+              <input type="text" name="age" id="age" class="form-control" readonly>
+          </div>
+
+            <!-- Gender (Radio) -->
+            <div class="mb-3">
+                <label>Gender</label><br>
+                <input type="radio" name="gender" value="Male" required> Male
+                <input type="radio" name="gender" value="Female"> Female
+                <input type="radio" name="gender" value="Other"> Other
+            </div>
+
+            <!-- Course (Dropdown) -->
+            <div class="mb-3">
+                <label>Course</label>
+                <select name="course" class="form-control" required>
+                    <option value="">Select Course</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Mechanical">Mechanical</option>
+                    <option value="Civil">Civil</option>
+                    <option value="Electrical">Electrical</option>
+                </select>
+            </div>
+
+
+          <!-- Mark 1 -->
+          <div class="mb-3">
+            <label>Mark 1</label>
+            <input type="number" name="mark1" id="mark1" class="form-control" onkeyup="calculateTotal()" min="0"
+                   max="100">
+          </div>
+
+          <!-- Mark 2 -->
+          <div class="mb-3">
+            <label>Mark 2</label>
+            <input type="number" name="mark2" id="mark2" class="form-control" onkeyup="calculateTotal()" min="0"
+                   max="100">
+          </div>
+
+          <!-- Total -->
+          <div class="mb-3">
+            <label>Total Marks</label>
+            <input type="text" name="total" id="total" class="form-control" readonly>
+          </div>
+
+          <!-- Address (Textarea) -->
+            <div class="mb-3">
+                <label>Address</label>
+                <textarea name="address" class="form-control" rows="3" required></textarea>
+            </div>
+
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center p-3 mt-5">
+        <p>Student Registration System 2026</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+      // Calculate Age
+      function calculateAge() {
+          var dob = document.getElementById('dob').value;
+          if (dob) {
+              var birthDate = new Date(dob);
+              var today = new Date();
+              var age = today.getFullYear() - birthDate.getFullYear();
+
+              document.getElementById('age').value = age;
+          }
+      }
+
+        // Calculate Total Marks
+      function calculateTotal() {
+          var mark1 = parseInt(document.getElementById('mark1').value) || 0;
+          var mark2 = parseInt(document.getElementById('mark2').value) || 0;
+
+          var total = mark1 + mark2;
+          document.getElementById('total').value = total;
+      }
+    </script>
+</body>
+</html>
